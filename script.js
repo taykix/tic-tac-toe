@@ -199,15 +199,23 @@ function GameController() {
             playRound();
             //If one player won after playing we display a message and stop.
             if (board.isPlayerWon(getCurrentPlayer().getSymbol())) {
-                console.log(`${getCurrentPlayer()} with the symbol ${getCurrentPlayer().getSymbol()} has won the game !\n
-                            Game Finished.!`);
+                console.log(`${getCurrentPlayer()} with the symbol ${getCurrentPlayer().getSymbol()} has won the round !\n
+                \t\t\tRound Finished.!`);
+                getCurrentPlayer().addScore();
                 break;
             }
             switchPlayerTurn();
         }
     }
 
+    const displayScores = () => {
+        console.log(`Current score is:\n${playerOne.getName()} is ${playerOne.getScore}\n${playerTwo.getName()} is ${playerTwo.getScore}`);
+        console.log("Round Starts");
+    }
+
+    displayScores();
     playGame();
+    displayScores();
 
     return {
         switchPlayerTurn,
@@ -216,6 +224,7 @@ function GameController() {
         getSelectedCell,
         playRound,
         playGame,
+        displayScores,
     }
 }
 
