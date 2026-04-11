@@ -73,12 +73,6 @@ function Gameboard() {
             }
             console.log( strRow + "\n");
         }
-        /*
-        board.forEach((row) => {
-            row.forEach((item) => console.log(item.getSymbol()));
-            console.log("\n");
-        });
-        */
     }
 
     const isGameFinished = () => {
@@ -174,20 +168,10 @@ function GameController() {
         console.log(`${getCurrentPlayer()}'s turn. Please select a area`);
     }
 
-    const getSelectedCell = () => {
-        let userInput = prompt("Array icin pozisyon gir. Örn: 1,2");
-        let inputs = userInput.split(",");
-        let row = parseInt(inputs[0]);
-        let column = parseInt(inputs[1]);
-
-        return {row, column};
-    }
-
-    const playRound = () => {
+    const playRound = (row, column) => {
         printRound();
-        let selectedCells = getSelectedCell();
         //If user chooses already chosed place, we play round again.
-        if (!board.changeCell(selectedCells.row, selectedCells.column, getCurrentPlayer().getSymbol())) {
+        if (!board.changeCell(row, column, getCurrentPlayer().getSymbol())) {
             console.log("You selected already selected place. Please Select Free Place");
             playRound();
             return;
@@ -209,13 +193,12 @@ function GameController() {
     }
 
     const displayScores = () => {
-        console.log(`Current score is:\n${playerOne.getName()} is ${playerOne.getScore}\n${playerTwo.getName()} is ${playerTwo.getScore}`);
+        console.log(`Current score is:\n${playerOne.getName()} is ${playerOne.getScore()}\n${playerTwo.getName()} is ${playerTwo.getScore()}`);
         console.log("Round Starts");
     }
 
     displayScores();
     playGame();
-    displayScores();
 
     return {
         switchPlayerTurn,
@@ -225,8 +208,58 @@ function GameController() {
         playRound,
         playGame,
         displayScores,
+        getBoard: board.getBoard,
     }
 }
 
-const game = GameController();
+function ScreenController() {}
+{
+    const game = GameController();
+    const playerTurnDiv = document.querySelector(".turn");
+    const boardDiv = document.querySelector(".board");
 
+    const updateScreen = () => {
+        boardDiv.textContent = "";
+
+        //getting the current state of our 2d array
+        const board = game.getBoard();
+        const currentPlayer = game.getCurrentPlayer();
+
+        playerTurnDiv.textContent = `${currentPlayer}'s turn...`;
+
+        for (let i = 0; i < board.length; i++) {
+            for(let j = 0; j < board[i].length; j++) {
+                const cellButton = document.createElement("button");
+                cellButton.classList.add("cell");
+                cellButton.dataset.row = i;
+                cellButton.dataset.column = j;
+                cellButton.textContent = board[i][j].getSymbol();
+                boardDiv.appendChild(cellButton);
+            }
+        }
+       // board.forEach((row, rowIndex) => {
+         //   row.forEach((cell, columnIndex) => {
+           //     const cellButton = document.createElement("button");
+           //     cellButton.classList.add("cell");
+           //     cellButton.dataset.row = rowIndex;
+           //     cellButton.dataset.column = columnIndex;
+           //     cellButton.textContent = cell.getSymbol();
+           //     boardDiv.appendChild(cellButton);
+          //  });
+     //   });
+    }
+
+    function clickHandlerBoard(e) {
+        const selectedColumn = e.target.dataset.column;
+        const selectedRow = e.target.dataset.row;
+
+        if (!selectedColumn || !selectedRow)
+            return;
+        game.playRound(selectedRow, selectedColumn);
+        updateScreen();
+    }
+    boardDiv.addEventListener("click", clickHandlerBoard);
+    updateScreen();
+}
+
+ScreenController();
