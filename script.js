@@ -169,12 +169,20 @@ function GameController() {
     }
 
     const playRound = (row, column) => {
-        printRound();
-        //If user chooses already chosed place, we play round again.
-        if (!board.changeCell(row, column, getCurrentPlayer().getSymbol())) {
-            console.log("You selected already selected place. Please Select Free Place");
-            playRound();
-            return;
+        if(!board.isGameFinished()) {
+            //If user chooses already chosed place, we play round again.
+            if (!board.changeCell(row, column, getCurrentPlayer().getSymbol())) {
+                console.log("You selected already selected place. Please Select Free Place");
+                playRound();
+                return;
+            }
+            //If one player won after playing we display a message and stop.
+            if (board.isPlayerWon(getCurrentPlayer().getSymbol())) {
+                console.log(`${getCurrentPlayer()} with the symbol ${getCurrentPlayer().getSymbol()} has won the round !\n
+                \t\t\tRound Finished.!`);
+                getCurrentPlayer().addScore();
+            }
+            switchPlayerTurn();
         }
     }
 
@@ -197,14 +205,11 @@ function GameController() {
         console.log("Round Starts");
     }
 
-    displayScores();
-    playGame();
 
     return {
         switchPlayerTurn,
         getCurrentPlayer,
         printRound,
-        getSelectedCell,
         playRound,
         playGame,
         displayScores,
@@ -224,8 +229,9 @@ function ScreenController() {}
         //getting the current state of our 2d array
         const board = game.getBoard();
         const currentPlayer = game.getCurrentPlayer();
+        console.log("HI");
 
-        playerTurnDiv.textContent = `${currentPlayer}'s turn...`;
+        playerTurnDiv.textContent = `${currentPlayer.getName()}'s turn...`;
 
         for (let i = 0; i < board.length; i++) {
             for(let j = 0; j < board[i].length; j++) {
@@ -237,16 +243,6 @@ function ScreenController() {}
                 boardDiv.appendChild(cellButton);
             }
         }
-       // board.forEach((row, rowIndex) => {
-         //   row.forEach((cell, columnIndex) => {
-           //     const cellButton = document.createElement("button");
-           //     cellButton.classList.add("cell");
-           //     cellButton.dataset.row = rowIndex;
-           //     cellButton.dataset.column = columnIndex;
-           //     cellButton.textContent = cell.getSymbol();
-           //     boardDiv.appendChild(cellButton);
-          //  });
-     //   });
     }
 
     function clickHandlerBoard(e) {
