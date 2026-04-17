@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 .board {
     display: grid;
     height: 500px;
@@ -19,4 +20,41 @@
     font-size: 2rem;
     border: 1px solid black;
     cursor: pointer;
+=======
+.board {
+    display: grid;
+    height: 500px;
+    width: 500px;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    border: 1px solid black;
+    gap: 2px;
+    padding: 2px;
+    background-color: azure;
+}
+
+.cell
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 2rem;
+    border: 1px solid black;
+    cursor: pointer;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 96px;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.container {
+    align-items: center;
+    justify-content: center;
+>>>>>>> Stashed changes
 }
